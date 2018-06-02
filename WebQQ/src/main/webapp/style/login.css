@@ -1,0 +1,102 @@
+html,body{
+		background:url(../image/login.jpg);
+	}
+.body{
+	position:absolute;
+	left:450px;
+	top:100px;
+	width:390px;
+	height:298px;
+	border-radius:3px;
+}
+.body_top{
+	position:absolute;
+	height:114px;
+	width:100%;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	background-color:#0080ff;
+}
+.body_bottom{
+	position:absolute;
+	top:114px;
+	width:100%;
+	height:184px;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+	background-color:#ffffff;
+}
+.Qicon{
+	position:absolute;
+	top:5px;
+	left:5px;
+	font-size:20px;
+	color:#ffffff;
+}
+.circle{
+	position:absolute;
+	top:75px;
+	left:160px;
+	/*把图片置顶*/
+	z-index:20;
+}
+input{
+	position:absolute;
+	width:200px;
+	height:30px;
+	left:95px;
+	border:0px;
+	/*设置下边框*/
+	border-bottom-style:solid;
+	border-bottom-color:#0080ff;
+	border-bottom-width:1px;
+	outline:none;	/*点击input不显示边框*/
+}
+#use{
+	top:40px;
+}
+#pwd{
+	top:70px;
+}
+#btn{
+	position:absolute;
+	left:95px;
+	top:120px;
+	width:200px;
+	height:30px;
+	background-color:#0080ff;
+	border:0;
+	border-radius:3px;
+	color:#ffffff;
+}
+.reg{
+	position:absolute;
+	top:275px;
+	left:15px;
+	font-size:10px;
+}
+
+.reg a:link,.reg a:visited{
+	text-align:center;
+	color:#0080c0;
+	
+}
+
+.reg a:hover{
+	text-decoration:none;
+	color:#0000ff;
+}
+#error{
+	position:absolute;
+	top:55px;
+	left:300px;
+	font-size:13px;
+	color:red;
+}
+#pwderror{
+	position:absolute;
+	top:80px;
+	left:300px;
+	font-size:13px;
+	color:red;
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+  "http://ibatis.apache.org/dtd/ibatis.apache-3-mapper.dtd"> 
+  <mapper namespace="webqq.dao.userDao">
+  	<insert id="registerUser" parameterType="webqq.dao.userDao">
+  		insert into user (userId,ID,nickName,password,autograph)
+  			values(#{userId},#{ID},#{nickName},#{password},#{autograph})
+  	</insert>
+  	 <select id="queryUserByID" parameterType="string" resultType="webqq.entity.User">
+  		select * from user where ID=#{ID} 
+  	</select>
+  	<update id="updateInfo" parameterType="webqq.entity.User">
+  		update User set nickName=#{nickName},password=#{password},autograph=#{autograph} where ID=#{ID}
+  	</update>
+  	<select id="searchUser" resultType="webqq.entity.User" parameterType="string">
+  		select * from user where nickName like #{text} or ID like #{text}
+  	</select>
+  	<select id="queryUserByuserId" parameterType="string" resultType="webqq.entity.User">
+  		select * from user where userId=#{userId} 
+  	</select>
+  </mapper>

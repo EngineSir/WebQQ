@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"  
+  "http://ibatis.apache.org/dtd/ibatis.apache-3-mapper.dtd"> 
+  <mapper namespace="webqq.dao.userGroupDao">
+  	<insert id="addGroup" parameterType="webqq.entity.UserGroup">
+  		insert into userGroup (groupId,userId,groupName,friendId)
+  			values(#{groupId},#{userId},#{groupName},#{friendId})
+  	</insert>
+  	<select id="queryGroup" parameterType="string" resultType="webqq.entity.UserGroup">
+  		select * from userGroup where userId=#{userId}
+  	</select>
+  	<select id="queryOneGroup" parameterType="string" resultType="webqq.entity.UserGroup">
+  		select * from userGroup where userId=#{userId} and groupName="朋友" and friendId is null;
+  	</select>
+  	<select id="getFriendList" parameterType="string" resultType="webqq.entity.User">
+  		select * from user where userId in
+			(select friendId from userGroup where userId=#{userId} and friendId is not null)
+  	</select>
+  </mapper>

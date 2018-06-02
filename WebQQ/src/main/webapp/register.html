@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>注册</title>
+<link rel="stylesheet" href="style/register.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/path.js"></script>
+</head>
+<script>
+	$(function(){
+		//返回
+		$('#cancel').click(function(){
+			window.location.href="login.html";
+		});
+		//注册
+		$('#reg_btn').click(function(){
+			var ID=$('#ID').val();
+			var pwd=$('#pwd').val();
+			var nickName=$('#nick').val();
+			var autograph=$('#autograph').val();
+			var ok=true;
+			if(ID==""){
+				$('#IDerror').text("不能为空");
+				ok=false;
+			}
+			if(pwd==""){
+				$('#pwderror').text("不能为空");
+				ok=false;
+			}
+			if(ok){
+				$.ajax({
+					url:path+"/register.do",
+					type:"post",
+					data:{"ID":ID,"nickName":nickName,"pwd":pwd,"autograph":autograph},
+					dataType:"json",
+					success:function(result){
+						if(result.state==0){
+							window.location.href="login.html";
+						}
+						if(result.state==1){
+							var error=result.msg;
+							$('#IDerror').text(error);
+						}
+					},
+					error:function(){
+						alert("注册失败");
+					}
+				});
+			}
+		})
+	});
+</script>
+<body>
+	<div class="update_body">
+		<table cellpadding="0" cellspacing="0" class="upta_table">
+			<tr>
+				<td>ID</td>
+				<td><input type="text" id="ID">
+					<span id="IDerror"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>昵称</td>
+				<td><input type="text" id="nick"></td>
+			</tr>
+			<tr>
+				<td>密码</td>
+				<td><input type="password"  id="pwd">
+					<span id="pwderror"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>签名</td>
+				<td><input type="text" id="autograph"></td>
+			</tr>
+		</table>
+		<div class="btn">
+			<button type="button" id="reg_btn">注册</button>
+			<button type="button" id="cancel">返回</button>
+		</div>
+	</div>
+</body>
+</html>

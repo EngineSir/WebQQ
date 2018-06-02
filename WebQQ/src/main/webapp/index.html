@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WebQQ</title>
+<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css"> 
+<link rel="stylesheet" href="style/index.css">
+	
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/path.js"></script>
+<script type="text/javascript">
+	//折叠
+	var socket=null;
+	var websocket=null;
+	var userID=null;
+	var title=null;
+	$(function(){
+		$('#Prompt').hide();
+		init();
+		initFriendMessage();
+		$('.body_sess').hide();
+		
+		//显示消息框
+		$('.list-group').on("click",function(){
+			//弹出框
+			$('.btn-primary').popover({html : true });
+		
+			$('.show').click(function(event){
+				var friendId=$(this).parent().data("friendId");	
+				
+				//先关闭之前的
+				title=$(this).text();
+				$('#contact_news').text(title);
+				$('.news').hide();
+				//清空内容
+				$('.body_ul').empty();
+				$('.news').show();
+				
+			/*	socket.onmessage=function(event){
+				
+					
+					$('#Prompt').show();
+					var end=event.data.indexOf(",");
+					var name=event.data.substring(0,end);
+					var info=event.data.substring(end+1);
+					var li="";
+					li+='<li class="list-group-item"><span class="show">'+name+'</span></li>';
+					var $li=$(li);
+					$('#seslist').append($li);
+					console.log(25252);
+					var uli='<li class="friend_msg">';
+					//uli+='<span>'+title+'</span><br>';
+					uli+='<span id="msg_body">'+info+'</span>';
+					uli+='</li>';
+					var $uli=$(uli);
+					$('.body_ul').append($uli);
+				}*/
+				//点击发送
+				
+				$('#Send').click(function(){
+					
+					var text=$('#text').val();
+					var use=$('#ID').text();
+					console.log(userID);
+					socket.send(friendId+"%"+use+","+userID+","+text);
+					var li='<li class="text_background">';
+					li+='<span>'+use+'</span><br>';
+					li+='<span id="textbody">'+text+'</span>';
+					li+='</li>';
+					var $li=$(li);
+					$('.body_ul').append($li);
+					return false;
+				});
+			});
+		});
+		
+		
+		socket.onmessage=function(event){
+			$('#Prompt').show();
+			var end=event.data.indexOf(",");
+			var name=event.data.substring(0,end);
+			
+			var idend=event.data.lastIndexOf(",");
+			var friendId=event.data.substring(end+1,idend);
+			var info=event.data.substring(idend+1);
+			var liname=$('.lishow');
+			
+			var ok=true;
+			for(var i=0;i<liname.length;i++){
+				if(name==liname[i].innerText){
+					ok=false;
+				}
+				
+			}
+			
+			if(ok){
+				var li="";
+				li+='<li class="list-group-item"><span class="show lishow">'+name+'</span></li>';
+				var $li=$(li);
+				$li.data("friendId",friendId)
+				$('#seslist').append($li);	
+			}
+			
+			if(title==name){
+				var uli='<li class="friend_msg">';
+				uli+='<span>'+name+'</span><br>';
+				uli+='<span id="msg_body">'+info+'</span>';
+				uli+='</li>';
+				var $uli=$(uli);
+				$('.body_ul').append($uli);
+			}
+			
+			return false;
+		}
+		//关闭消息框
+		$('#btn').click(function(){
+			$('.news').hide();
+		});
+		
+		//点击会话
+		$('#session').click(function(){
+			$('.body_context').hide();
+			$('#Prompt').hide();
+			$('.body_sess').show();
+			$('#contact').text("会话");
+		});
+		
+		//点击联系人
+		$('#useCon').click(function(){
+			$('.body_sess').hide();
+			$('.body_context').show();
+			$('#contact').text("联系人");
+			$('#grouplist').empty();
+			showGroup();
+		});
+		//点击搜索
+		$('#search').click(function(){
+			$('.search_use').show();
+		});
+		
+		//关闭搜索框
+		$('#sear_btn').click(function(){
+			$('.search_use').hide();
+		});
+		
+		//修改分组名
+		$('.list-group').on("click",function(){
+			var $groupName=$(this).siblings().children();
+		
+			
+		$('.upda').on("click",function(){
+		
+			var text=$(this).siblings().val();
+			$groupName.text(text);
+			
+		});	
+		});
+		//显示个人信息
+		showInfo();
+		//点击搜索
+		$('#sear_text_btn').on("click",searchUse);
+		//显示分组
+		showGroup();
+		//添加好友
+		$('.result_bg').on("click",".addFrientBtn",addFrient);
+		//点击同意
+		$('#seslist').on("click","#agree",agreeFriend);
+		//获取好友列表
+		//getFriendList();
+	});
+	
+</script>  
+</head>
+<body>
+	<div class="update_name">
+		<a href="updateName.html"><span id="ID"></span></a>
+			<span id="personality"></span>
+	</div>
+	
+	<!-- 联系人 -->
+	<div class="body_top" class="container-fluid" >
+		<div class="top">
+			<span id="contact">联系人</span>
+			<button type="button" id="search">
+				<span class="glyphicon glyphicon-search" ></span>
+			</button>
+		</div>
+		<div class="body_context">
+		<ul class="list-group" id="grouplist">	
+			
+		</ul>
+		</div>
+		<div class="body_bottom">
+			<ul id="sess_li">
+			<li>  <button type="button" class="btn btn-info btn-lg" id="session">
+			<span id="Prompt"></span>
+          <span class="glyphicon glyphicon-sound-stereo" ></span>会话
+        </button>
+			</li>
+				<li> <button type="button" class="btn btn-info btn-lg"  id="useCon">
+         			 <span class="glyphicon glyphicon-user"></span>联系
+       				 </button>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+	<!-- 会话 -->
+	<div class="body_sess">
+		<ul class="list-group" id="seslist">
+			<!-- -<li class="list-group-item"><span class="show">免费域名</span></li>
+			<li class="list-group-item"><span class="show">免费 Window 空间托管</span></li>
+			<li class="list-group-item"><span class="show">图像的数量</span></li>
+			<li class="list-group-item"><span class="show">24*7 支持</span></li>
+			<li class="list-group-item"><span class="show">每年更新成本</span></li> -->
+		</ul>
+	</div>
+	<!-- 消息框 -->
+	<div class="news" hidden="hidden">
+		<div class="top">
+			<span id="contact_news"></span>
+			<button type="button" id="delfriendbtn">删除</button>
+			<button type="button" id="btn" name="关闭" value="关闭" >关闭</button>
+		</div>
+			<div class="contact_body">
+				<ul class="body_ul">
+					
+				</ul>
+			</div>
+		<div class="body_bottom">
+			<input type="text" id="text" class="form-control">
+			<button type="button" id="Send" name="发送" value="发送" >发送</button>
+		</div>
+	</div>
+	
+	<!-- 搜索框 -->
+	<div class="search_use" hidden="hidden">
+		<div class="search_top">
+			<span id="sear_s">搜索</span>
+			<button type="button" id="sear_btn">关闭</button>
+		</div>
+		<div class="sear_body">
+		<!-- class="form-control"是文本框与左右相距 一段距离 -->
+			<input type="text" id="sear_text"  class="form-control" placeholder="昵称/ID">
+			<button type="button" id="sear_text_btn">搜索</button>
+		</div>
+		<div class="sear_result">
+			<table cellpadding="0" cellspacing="0" class="result_bg">
+		</table>
+		</div>
+	</div>
+</body>
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</html>

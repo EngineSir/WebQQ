@@ -1,0 +1,42 @@
+html,body{
+	background:url(../image/bgupdate.jpg)
+}
+	.update_body{
+		position:absolute;
+		top:80px;
+		left:350px;
+		width:400px;
+		height:400px;
+		background-color:rgba(0,0,0,0.5);
+		border-radius:8px;
+	}
+	.upta_table{
+		position:absolute;
+		top:50px;
+		left:60px;
+		color:white;
+		font-size:15px;
+	}
+	input{
+		background-color:rgba(0,0,0,0.5);
+		color:white;
+		border-radius:5px;
+		margin:15px 10px 10px 20px;
+		outline:none;
+		border:solid 1px #0080c0;
+		padding:3px;
+	}
+	.btn{
+		position:absolute;
+		top:250px;
+		left:100px;
+	}
+	.btn button{
+		border-radius:5px;
+		margin:20px;
+		border:solid 1px #0080c0;
+		background-color:rgba(0,0,0,0.5);
+		outline:none;
+		cursor:pointer;
+		color:white;
+	}
