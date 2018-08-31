@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>员工信息表</title>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="easyui/demo/demo.css">
+	  <link rel="stylesheet" href="layui/css/layui.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="scripts/mangage.js"></script>
+	<script type="text/javascript" src="scripts/path.js"></script>
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/cookie_util.js"></script>
+	<script type="text/javascript" src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+	<script src="layui/layui.js"></script>
+	<link rel="stylesheet" href="styles/mangage.css">
+	<script>
+		var label=""; 
+		var page=1;
+		var Gvalue="";
+		var form;
+		$(function(){
+			layui.use('form', function(){
+				   form = layui.form;
+			});
+			//加载公共页面
+			$(".com").load("com.html");
+			$("#up").attr('disabled',true);
+			$("#down").attr('disabled',true);
+			//点击添加
+			$('#add').click(clickAdd);
+			//点击取消
+			$('.close').click(clickClose);
+			//点击添加确定
+			$('#sure').click(clickSure);
+			//点击删除
+			$(".table_info").on("click",".delete",deleteInfo);
+			//点击修改
+			$(".table_info").on("click",".update",updateInfo);
+			//点击修改确认
+			$("#up_sure").click(upSure);
+			//确认删除
+			$(".del_sure").click(delSure);
+			//下一页
+			$("#down").click(downPage);
+			//上一页
+			$("#up").click(upPage);
+		});
+	</script>
+</head>
+<body>
+	<div class="com"></div>
+	<div class="body_content">
+	
+		<div class="body_cude">
+			<div class="body_opcation">
+				<input class="easyui-searchbox" data-options="prompt:'输入搜索值',menu:'#mm',searcher:doSearch" style="height:30px;width:300px" id="search"></input>
+				<div id="mm">
+					<div data-options="name:'全部',iconCls:'icon-ok'">全部</div>
+					<div data-options="name:'部门',iconCls:'icon-ok'">部门</div>
+					<div data-options="name:'其他',iconCls:'icon-ok'">其他</div>
+				</div>
+					<button type="button" id="add" class="layui-btn layui-btn-normal">添加</button>
+			</div>
+			<!--隐藏的信息框-->
+			<div class="show layui-form" hidden="hidden">
+				<input type="text" id="name" class="easyui-textbox inpuWH">
+				<span>姓名</span>
+				<div class="layui-form-item">
+				<div class="sear_query layui-input-block">
+				<input type="radio" name="sex" value="男" title="男" lay-filter="rad">
+				<input type="radio" name="sex" value="女" title="女" lay-filter="rad">
+				</div>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="dept" class="easyui-textbox inpuWH">
+				<span>部门</span>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="num" class="easyui-textbox inpuWH">
+				<span>编号</span>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="tele" class="easyui-textbox inpuWH">
+				<span>号码</span>
+				</div>
+				<div class="styleWH">
+				<input type="email" id="email" class="easyui-textbox inpuWH">
+				<span>邮箱</span>
+				</div>
+				<button type="button" class="layui-btn layui-btn-normal btn close" id="close">取消</button>
+				<button type="button" class="layui-btn layui-btn-normal" id="sure">确定</button>
+			</div>
+			<!-- 修改员工信息界面 -->
+			<div class="up_show layui-form" hidden="hidden">
+				<input type="text" id="up_name" class="easyui-textbox inpuWH">
+				<span>姓名</span>
+				<div class="layui-form-item">
+				<div class="sear_query layui-input-block">
+				<input type="radio" name="Sex" value="男" id="men" title="男" lay-filter="rad">
+				<input type="radio" name="Sex" value="女" id="women" title="女" lay-filter="rad">
+				</div>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="up_dept" class="easyui-textbox inpuWH">
+				<span>部门</span>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="up_num" class="easyui-textbox inpuWH">
+				<span>编号</span>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="up_tele" class="easyui-textbox inpuWH">
+				<span>号码</span>
+				</div>
+				<div class="styleWH">
+				<input type="email" id="up_email" class="easyui-textbox inpuWH">
+				<span>邮箱</span>
+				</div>
+				<button type="button" class="layui-btn layui-btn-normal btn close" id="close">取消</button>
+				<button type="button" class="layui-btn layui-btn-normal btn" id="up_sure">确定</button>
+			</div>
+			<!-- 显示表格信息 -->
+			<table class="layui-table table_info" border="1" cellspacing="0">
+				<tr>
+					<th>姓名</th>
+					<th>性别</th>
+					<th>部门</th>
+					<th>编号</th>
+					<th>号码</th>
+					<th>邮箱</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</table>
+		</div>
+	</div>
+		
+		<div class="page">
+				<button type="button" id="up" class="layui-btn layui-btn-normal">上一页</button>
+				<button type="button" id="down" class="layui-btn layui-btn-normal">下一页</button>
+			</div>
+	<!-- 背景模态化 -->
+	<div class="opacity_bg" style='display:none'></div>
+	<!-- 隐藏的确认删除框 -->
+	<div class="sure_del" hidden="hidden">
+	<span id="info_del">是否确认删除该信息?</span>
+		<button type="button" class="layui-btn layui-btn-normal close del_close">取消</button>
+		<button type="button" class="layui-btn layui-btn-normal del_sure">确认</button>
+	</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+.body_layer{
+	position:absolute;
+	top:15%;
+	left:35%;
+	width:38%;
+	height:89%;
+}
+.tab_info{
+	height:70%;
+	overflow:auto;
+}
+.query{
+	position:absolute;
+	bottom:12%;
+	left:42%;
+}
+.opacity_bg{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	background:#000;
+	opacity:0.6;
+	margin:auto;
+	z-index:9999999;
+	display:none;
+}
+.show{
+	position:absolute;
+	top:15%;
+	left:15%;
+	width:60%;
+	height:30%;
+	background:#fff;
+	z-index:999999999;
+}
+.deptN{
+	position:absolute;
+	top:20%;
+}
+#close{
+	position:absolute;
+	top:60%;
+	left:55%;
+}
+#sureUP{
+	position:absolute;
+	top:60%;
+	left:25%;
+}

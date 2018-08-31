@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>数链科技考勤系统 </title>
+  	<link rel="stylesheet" href="styles/mangage.css">
+  	<link rel="stylesheet" href="styles/adju.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="easyui/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" href="layui/css/layui.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/index.js"></script>
+  	<script type="text/javascript" src="scripts/path.js"></script>
+  	<script type="text/javascript" src="scripts/uitls.js"></script>
+  	<script type="text/javascript" src="scripts/cookie_util.js"></script>
+  	<script src="layui/layui.js"></script>
+  	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+</head>
+<script type="text/javascript">
+//JavaScript代码区域
+var jsonData={
+		"value":"",
+		"name":"",
+		"startDate":"",
+		"endDate":"",
+		"page":1
+};
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+  
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#date' //指定元素
+    
+  });
+  laydate.render({
+	    elem: '#date1'//指定元素
+	  });
+});
+	$(function(){
+		$("#up").attr('disabled',true);
+		$("#down").attr('disabled',true);
+		var form;
+		$(".com").load("com.html");
+		//添加请假员工
+		$(".add_leave").click(function(){
+			$('#name').textbox("setValue","");
+			$('#start').textbox("setValue","");
+			$('#end').textbox("setValue","");
+			$(".opacity_bg").show();
+			$(".record_show").show();
+		});
+		
+		layui.use('form', function(){
+			   form = layui.form;
+		});
+		//关闭
+		$(".close").click(function(){
+			$(".opacity_bg").hide();
+			$(".show").hide();
+			$(".record_show").hide();
+		});
+		//查询
+		$("#query").click(searchLeave);
+		//确定添加请假信息
+		$("#sure_leave").click(sureLeave);
+		//下一页
+		$("#down").click(downPage);
+		//上一页
+		$("#up").click(upPage);
+		queryDept();
+	});
+</script>
+<body class="layui-layout-body">
+	<div class="com"></div>
+	
+	<div class="info_right">
+		<span>请假信息</span>
+		<button type="button" class="layui-btn layui-btn-normal add_leave">添加</button>
+	</div>
+	<div class="body_area layui-form">
+		<div class="date_end">
+			<!-- <input class="easyui-datebox" id="start" data-options="sharedCalendar:'#cc'">开始 -->
+			<div class="layui-inline">
+      <label class="layui-form-label">开始日期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="date" id="date" lay-verify="date" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">结束日期</label>
+      <div class="layui-input-inline">
+        <input type="text" name="date" id="date1" lay-verify="date" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+			<!--<input class="easyui-datebox" id="end" data-options="sharedCalendar:'#cc'">结束 -->
+		</div>
+		<div class="layui-form-item">
+		<div class="sear_query layui-input-block">
+			<input type="radio" name="adju" id="all" checked="checked" value="全部" title="全部" lay-filter="rad">
+			<input type="radio" name="adju" id="leave" value="请假" title="请假" lay-filter="rad">
+			<input type="text" class="easyui-textbox" id="text">
+			<button type="button" class="layui-btn layui-btn-normal" id="query">查询</button>
+		</div>
+		</div>
+		<!-- 请假信息隐藏框 -->
+		<div class="record_show" hidden="hidden">
+				<div class="styleWH">
+				<input type="text" id="name" class="easyui-textbox inpuWH">
+				<span>姓名</span>
+				</div>
+				<div class="styleWH">
+				<!-- <input type="text" id="dept" class="easyui-textbox inpuWH">-->
+				<div class="layui-input-inline selDivWH">
+     				 <select name="quiz2" id="chooseDept"> 
+       					
+      				</select>
+   				 </div>
+   				 <span id="dept">部门</span>
+				<div class="styleWH">
+				<input type="text" id="start" class="easyui-textbox inpuWH">
+				<span>开始</span>
+				</div>
+				<div class="styleWH">
+				<input type="text" id="end" class="easyui-textbox inpuWH" >
+				<span>结束</span>
+				</div>
+				<button type="button" class="layui-btn layui-btn-normal btn close">取消</button>
+				<button type="button" class="layui-btn layui-btn-normal btn" id="sure_leave">确定</button>
+				<br><br>
+				<span>注:开始，结束日期输入格式2018/05/10</span>
+		</div>
+	</div>
+	<table class="layui-table showtab" lay-size="sm">
+		<thead>
+   			 <tr>
+    			  <th>姓名</th>
+     			  <th>部门</th>
+    			  <th>请假时间</th>
+  		    </tr> 
+ 		 </thead>
+  			 
+	</table>
+	
+	</div>
+	<div class="showPage">
+				<button type="button" id="up" class="layui-btn layui-btn-normal">上一页</button>
+				<button type="button" id="down" class="layui-btn layui-btn-normal">下一页</button>
+			</div>
+	<!-- 背景模态化 -->
+	<div class="opacity_bg" style='display:none'></div>
+</body>
+</html>
+      

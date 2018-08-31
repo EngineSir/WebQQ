@@ -1,0 +1,43 @@
+.adju{
+	position:absolute;
+	margin-left:85%;
+}
+.search a:hover{
+	text-decoration:none;
+}
+.show_record{
+	left:17%;
+}
+.layer{
+	position:absolute;
+	top:15%;
+	left:20%;
+	background:#ffffff;
+	z-index:99999999;
+	width:70%;
+	height:80%;
+	
+}
+.opacity_bg{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	background:#000;
+	opacity:0.6;
+	margin:auto;
+	z-index:9999999;
+	display:none;
+}
+#close_show{
+	position:absolute;
+	left:40%;
+	top:90%;
+}
+.showtlay{
+	position:absolute;
+	width:100%;
+	height:90%;
+	overflow:auto;
+}

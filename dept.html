@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>部门信息</title>
+	<link rel="stylesheet" href="layui/css/layui.css">
+	<link rel="stylesheet" href="styles/dept.css">
+	<script type="text/javascript" src="scripts/cookie_util.js"></script>
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/dept.js"></script>
+	<script type="text/javascript" src="scripts/path.js"></script>
+	<script src="layui/layui.js"></script>
+</head>
+	<script type="text/javascript">
+		$(function(){
+			$(".com").load("com.html");
+			//添加部门
+			$("#sure").click(addDept);
+			//删除
+			$("#tab").on("click",".delete",delDept);
+			//查询
+			$("#query").click(queryDept);
+			//修改
+			$("#tab").on("click",".update",updateDept);
+			//取消
+			$("#close").click(function(){
+				$(".show").hide();
+				$(".opacity_bg").hide();
+			});
+			//确定
+			$("#sureUP").click(sureUp);
+		});
+	</script>
+<body class="layui-layout-body">
+	<div class="com"></div>
+	<div class="body_layer">
+		<div class="layui-form-item">
+    <label class="layui-form-label">部门名称</label>
+    <div class="layui-input-inline">
+      <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" id="addDept">
+    </div>
+    <button class="layui-btn layui-btn-primary" id="sure">确定</button>
+  </div>
+		<div class="tab_info">
+			<table class="layui-table" border="1" cellspacing="0" id="tab">
+				<tr>
+					<th>部门名称</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</table>
+		</div>
+		 <div class="query">
+		 	<button class="layui-btn layui-btn-primary" id="query">查询</button>
+		 </div>
+		 <!-- 隐藏修改信息框 -->
+		 <div class="show layui-form" hidden="hidden">
+		 		<div class="layui-form-item deptN">
+    				<label class="layui-form-label">部门名称</label>
+				<div class="layui-input-inline">
+      				<input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" id="upDept">
+    			</div>
+    			</div>
+				<button type="button" class="layui-btn layui-btn-normal" id="close">取消</button>
+				<button type="button" class="layui-btn layui-btn-normal" id="sureUP">确定</button>
+			
+			</div>
+	</div>
+	<div class="opacity_bg" style='display:none'></div>
+</body>
+</html>

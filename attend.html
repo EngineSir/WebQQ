@@ -1,0 +1,158 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>考勤管理</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" href="styles/record.css">
+	<link rel="stylesheet" href="styles/attend.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="easyui/demo/demo.css">
+	 <link rel="stylesheet" href="layui/css/layui.css">
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="scripts/uitls.js"></script>
+	<script type="text/javascript" src="scripts/attend.js"></script>
+	<script type="text/javascript" src="scripts/cookie_util.js"></script>
+	<script type="text/javascript" src="scripts/path.js"></script>
+	<script src="layui/layui.js"></script>
+	<script src="scripts/queryDept.js"></script>
+	<script>
+		$(function(){
+			$(".com").load("com.html");
+			//检索信息
+			$("#search_info").click(searchInfo);
+			//数据导出
+			$("#dataImport").click(dataImport);
+			//绑定双击事件
+			$("#tt").datagrid({
+			    onDblClickRow:function(rowIndex){
+			    	var start=calecon($("#start").val().trim());;
+			    	var end=calecon($("#end").val().trim());
+			    	$(".layer").show();
+			    	$(".opacity_bg").show();
+			        $("#tt").datagrid("selectRow",rowIndex);
+			        var currentRow = $("#tt").datagrid("getSelected");
+			        var empName=currentRow.name;
+			        $.ajax({
+			        	url:path+"/record/detailedInfo.io",
+			        	type:"post",
+			        	dataType:"json",
+			        	data:{"empName":empName,"start":start,"end":end},
+			        	success:function(result){
+			        		delTr();
+			        		if(result.state==1){
+			        			var data=result.data;
+			        			for(var i=0;i<data.length;i++){
+			        				create(data[i].dates,data[i].workMorn,data[i].atNoon,data[i].workAfter,data[i].atNight);
+			        			}
+			        		}
+			        	},
+			        	error:function(){
+			        		alert("查看失败");
+			        	}
+			        });
+			     
+			        //取消选中
+			        $("#tt").datagrid("unselectRow", rowIndex);
+			    }
+			});
+			//关闭显示以及背景层
+			$("#close_show").click(function(){
+				$(".layer").hide();
+		    	$(".opacity_bg").hide();
+			});
+			//获取部门信息
+			queryDept();
+			//限定日历不能选取今天之后的日期
+			dateValid();
+		});
+	</script>
+</head>
+<body class="layui-layout-body">
+<div class="com"></div>
+	<div class="body">
+		<div class="body_logo">
+			<span>考勤管理系统</span>
+		</div>
+		<div class="body_data">
+		<!-- 检索条件区 -->
+			<div class="search">
+				<div class="title">
+					<span>检索条件</span>
+				</div>
+				<table class="search_tab" border="0" cellspacing="0">
+					<tr>
+						<td class="td">姓名</td>
+						<td class="cale td">
+							<input class="easyui-textbox" id="name" style="width:100%;height:32px">
+						</td>
+						<td class="td" >开始日期</td>
+						<td class="cale td" ><input class="easyui-datebox" id="start" data-options="sharedCalendar:'#cc'"></td>
+					</tr>
+					<tr>
+						<td class="td" >部门</td>
+						<td class="cale td" >
+							<select class="easyui-combobox" id="dept" name="state" style="width:303px;" data-options="valueField:'id', textField:'text'">
+								<!--<option value="A1">技术研发部</option>
+								<option value="A2">财务部</option>
+								<option value="A3">人力资源部</option>
+								<option value="A4">全部</option>-->
+							</select>
+						</td>
+						<td class="td" >结束日期</td>
+						<td class="cale td"><input class="easyui-datebox" id="end" data-options="sharedCalendar:'#cc'"></td>
+					</tr>
+					<tr>
+						<td colspan="4" id="sea_btn">
+							<button type="button" id="search_info" class="layui-btn layui-btn-normal">检索</button>
+						</td>
+					</tr>
+				</table>
+				<div id="cc" class="easyui-calendar"></div>
+			</div>
+			<div class="dataExcel">
+				<button class="layui-btn" id="dataImport">数据导出</button>
+			</div>
+		<!-- 展示考勤记录区 -->
+			<div class="show_record">
+				<table id="tt" class="easyui-datagrid" style="width:80%;height:385px"
+					title="工时统计表" iconCls="icon-save" 
+					rownumbers="true" >
+					<thead>
+						<tr>
+							<th field="name" width="130">姓名</th>
+							<th field="dept" width="130">部门</th>
+							<th field="time" width="130">上班天数</th>
+							<th field="hours" width="130">小时数</th>
+							<th field="late" width="130">迟到</th>
+							<th field="leaveEarly" width="130">早退</th>
+							<th field="overTime" width="130">加班</th>
+							<th field="total" width="130">总工时</th>
+						</tr>
+					<thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="layer" hidden="hidden">
+		<div class="showtlay">
+		<table class="layui-table tab_t" lay-size="sm">
+			<thead>
+   				 <tr>
+    				  <th>日期</th>
+     				  <th>早上上班</th>
+    				  <th>中午下班</th>
+    				  <th>下午上班</th>
+    				  <th>晚上上班</th>
+  		  		  </tr> 
+ 			 </thead> 
+	</table>
+	</div>
+	<button type="button" id="close_show" class="layui-btn layui-btn-normal">关闭</button>
+	</div>
+	<div class="opacity_bg" style='display:none'></div>
+</body>
+</html>
